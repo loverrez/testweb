@@ -6,8 +6,8 @@ import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
 export default function Navbar({ 
-  siteName = "NEXTWEB",
-  siteLogo
+  siteName: initialSiteName = "NEXTWEB",
+  siteLogo: initialSiteLogo
 }: { 
   siteName?: string;
   siteLogo?: string;
@@ -15,11 +15,37 @@ export default function Navbar({
   const [user, setUser] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [siteName, setSiteName] = useState(initialSiteName);
+  const [siteLogo, setSiteLogo] = useState(initialSiteLogo);
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 
   useEffect(() => {
+    if (initialSiteName) setSiteName(initialSiteName);
+  }, [initialSiteName]);
+
+  useEffect(() => {
+    if (initialSiteLogo) setSiteLogo(initialSiteLogo);
+  }, [initialSiteLogo]);
+
+  useEffect(() => {
+    // 0. Fetch site settings if missing
+    const fetchSettings = async () => {
+      if (!initialSiteLogo) {
+        const { data } = await supabase
+          .from('site_settings')
+          .select('site_name, site_logo')
+          .single();
+        
+        if (data) {
+          if (data.site_name) setSiteName(data.site_name);
+          if (data.site_logo) setSiteLogo(data.site_logo);
+        }
+      }
+    };
+    fetchSettings();
+
     // 1. Get initial session
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
@@ -53,7 +79,7 @@ export default function Navbar({
       subscription.unsubscribe();
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []);
+  }, []); // Empty dependency array for mount only (and initialSiteLogo check is inside)
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
