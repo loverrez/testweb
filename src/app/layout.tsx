@@ -1,19 +1,14 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import { Inter, Anuphan } from "next/font/google";
+import { Prompt } from "next/font/google";
 import "./globals.css";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
 import MainContentWrapper from "@/components/MainContentWrapper";
 import { supabase } from "@/lib/supabase";
 
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-});
-
-const anuphan = Anuphan({
-  variable: "--font-anuphan",
+const prompt = Prompt({
+  variable: "--font-prompt",
   subsets: ["thai", "latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700"],
+  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
 });
 
 export const dynamic = 'force-dynamic';
@@ -78,7 +73,7 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" href={logoHref} />
       </head>
       <body
-        className={`${inter.variable} ${anuphan.variable} font-anuphan antialiased bg-black text-white`}
+        className={`${prompt.variable} font-prompt antialiased bg-black text-white`}
       >
         <div className="bg-3d-grid" />
         <ConditionalNavbar 
