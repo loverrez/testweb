@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { supabase } from '@/lib/supabase';
 
 declare global {
   interface Window {
@@ -10,8 +11,15 @@ declare global {
 }
 
 export default function RegisterPage() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState('');
+  const [verifyPassword, setVerifyPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [message, setMessage] = useState('');
+
   useEffect(() => {
-    // Load Turnstile script if it's not already there
+    // Load Turnstile script
     const script = document.createElement('script');
     script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
     script.async = true;
@@ -19,9 +27,43 @@ export default function RegisterPage() {
     document.body.appendChild(script);
     
     return () => {
-      document.body.removeChild(script);
+      if (document.body.contains(script)) {
+        document.body.removeChild(script);
+      }
     };
   }, []);
+
+  const handleRegister = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage('');
+
+    if (password !== verifyPassword) {
+      setMessage('รหัสผ่านไม่ตรงกัน');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: {
+            username: username,
+          }
+        }
+      });
+
+      if (error) throw error;
+      
+      setMessage('สมัครสมาชิกสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยัน');
+    } catch (error: any) {
+      setMessage('เกิดข้อผิดพลาด: ' + error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className="flex items-center justify-center min-h-[85vh] px-4 py-12">
@@ -31,13 +73,22 @@ export default function RegisterPage() {
           <p className="text-zinc-500 text-sm">สร้างบัญชีใหม่เพื่อเริ่มต้นใช้งานเว็บไซต์ของเรา</p>
         </div>
 
-        <form className="space-y-5" onSubmit={(e) => e.preventDefault()}>
+        {message && (
+          <div className={`mb-6 p-4 rounded-xl text-sm font-bold text-center ${message.includes('สำเร็จ') ? 'bg-green-900/20 text-green-500 border border-green-900/50' : 'bg-red-900/20 text-red-500 border border-red-900/50'}`}>
+            {message}
+          </div>
+        )}
+
+        <form className="space-y-5" onSubmit={handleRegister}>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
             <div className="space-y-2">
               <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">ชื่อผู้ใช้ (Username)</label>
               <input 
                 type="text" 
                 placeholder="User123"
+                required
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-red-600 transition-all placeholder:text-zinc-700"
               />
             </div>
@@ -46,6 +97,9 @@ export default function RegisterPage() {
               <input 
                 type="email" 
                 placeholder="test@example.com"
+                required
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-red-600 transition-all placeholder:text-zinc-700"
               />
             </div>
@@ -56,6 +110,9 @@ export default function RegisterPage() {
             <input 
               type="password" 
               placeholder="••••••••"
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-red-600 transition-all placeholder:text-zinc-700"
             />
           </div>
@@ -65,24 +122,27 @@ export default function RegisterPage() {
             <input 
               type="password" 
               placeholder="••••••••"
+              required
+              value={verifyPassword}
+              onChange={(e) => setVerifyPassword(e.target.value)}
               className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-red-600 transition-all placeholder:text-zinc-700"
             />
           </div>
 
-          {/* Cloudflare Turnstile */}
           <div className="flex justify-center py-2">
             <div 
               className="cf-turnstile" 
-              data-sitekey="1x00000000000000000000AA" // Test Sitekey from Cloudflare
+              data-sitekey="1x00000000000000000000AA"
               data-theme="dark"
             ></div>
           </div>
 
           <button 
             type="submit"
-            className="w-full bg-red-700 hover:bg-red-600 text-white font-black py-4 rounded-2xl transition-all hover:shadow-[0_0_30px_rgba(230,0,0,0.4)] active:scale-[0.98] uppercase tracking-widest text-sm"
+            disabled={loading}
+            className="w-full bg-red-700 hover:bg-red-600 text-white font-black py-4 rounded-2xl transition-all hover:shadow-[0_0_30px_rgba(230,0,0,0.4)] active:scale-[0.98] uppercase tracking-widest text-sm disabled:opacity-50"
           >
-            สร้างบัญชีผู้ใช้
+            {loading ? 'กำลังดำเนินการ...' : 'สร้างบัญชีผู้ใช้'}
           </button>
         </form>
 
