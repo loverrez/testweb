@@ -36,6 +36,9 @@ export async function generateMetadata(): Promise<Metadata> {
       description: data?.site_description || "Modern web with Next.js",
       images: data?.site_logo ? [data.site_logo] : [],
     },
+    icons: {
+      icon: data?.site_logo || '/favicon.ico',
+    },
   };
 }
 
@@ -47,7 +50,7 @@ export default async function RootLayout({
   // Fetch site settings for UI
   const { data } = await supabase
     .from('site_settings')
-    .select('site_name')
+    .select('site_name, site_logo')
     .single();
 
   return (
@@ -56,7 +59,10 @@ export default async function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
       >
         <div className="bg-3d-grid" />
-        <ConditionalNavbar siteName={data?.site_name || "NextWeb"} />
+        <ConditionalNavbar 
+          siteName={data?.site_name || "NextWeb"} 
+          siteLogo={data?.site_logo || ""}
+        />
         <MainContentWrapper>
           {children}
         </MainContentWrapper>

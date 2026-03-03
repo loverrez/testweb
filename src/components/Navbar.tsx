@@ -5,7 +5,13 @@ import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
-export default function Navbar({ siteName = "NEXTWEB" }: { siteName?: string }) {
+export default function Navbar({ 
+  siteName = "NEXTWEB",
+  siteLogo
+}: { 
+  siteName?: string;
+  siteLogo?: string;
+}) {
   const [user, setUser] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -59,8 +65,15 @@ export default function Navbar({ siteName = "NEXTWEB" }: { siteName?: string }) 
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl flex flex-col items-end gap-3">
       {/* Main Navbar Frame */}
       <div className="w-full bg-black/60 backdrop-blur-md border border-red-900/50 rounded-2xl px-8 py-4 flex items-center justify-between box-red-glow">
-        <Link href="/" className="text-2xl font-black text-red-600 hover:text-red-500 transition-all hover:scale-105 tracking-tighter">
-          {siteName}
+        <Link href="/" className="flex items-center gap-3 text-2xl font-black text-red-600 hover:text-red-500 transition-all hover:scale-105 tracking-tighter">
+          {siteLogo && (
+            <img 
+              src={siteLogo} 
+              alt="Logo" 
+              className="w-8 h-8 object-contain rounded-full border border-red-900/50" 
+            />
+          )}
+          <span>{siteName}</span>
         </Link>
         
         <div className="flex items-center gap-6">
