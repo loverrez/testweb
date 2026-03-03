@@ -12,22 +12,23 @@ export default function AdminLayout({
 }) {
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
+  const [openCategory, setOpenCategory] = useState<string | null>('ภาพรวม');
   const router = useRouter();
   const pathname = usePathname();
 
   useEffect(() => {
-    checkAdmin();
-  }, []);
+    const checkAdmin = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session || session.user.user_metadata?.role !== 'admin') {
+        router.push('/login');
+      } else {
+        setIsAdmin(true);
+        setLoading(false);
+      }
+    };
 
-  const checkAdmin = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session || session.user.user_metadata?.role !== 'admin') {
-      router.push('/login');
-    } else {
-      setIsAdmin(true);
-      setLoading(false);
-    }
-  };
+    checkAdmin();
+  }, [router]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
@@ -44,9 +45,19 @@ export default function AdminLayout({
 
   if (!isAdmin) return null;
 
-  const menuItems = [
-    { name: 'Dashboard', href: '/admin', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
-    { name: 'ตั้งค่าเว็บไซต์', href: '/admin/settings', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
+  const menuCategories = [
+    {
+      name: 'ภาพรวม',
+      items: [
+        { name: 'Dashboard', href: '/admin', icon: 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6' },
+      ],
+    },
+    {
+      name: 'จัดการเว็บไซต์',
+      items: [
+        { name: 'ตั้งค่าเว็บไซต์', href: '/admin/settings', icon: 'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z' },
+      ],
+    },
   ];
 
   return (
@@ -59,22 +70,40 @@ export default function AdminLayout({
           </Link>
         </div>
 
-        <nav className="flex-1 px-4 space-y-2">
-          {menuItems.map((item) => (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={`flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-all group ${
-                pathname === item.href 
-                ? 'bg-red-600 text-white shadow-lg shadow-red-900/20' 
-                : 'text-zinc-500 hover:bg-red-900/10 hover:text-red-500'
-              }`}
-            >
-              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d={item.icon} />
-              </svg>
-              {item.name}
-            </Link>
+        <nav className="flex-1 px-4 space-y-3">
+          {menuCategories.map((category) => (
+            <div key={category.name} className="space-y-2">
+              <button
+                type="button"
+                onClick={() => setOpenCategory(openCategory === category.name ? null : category.name)}
+                className="w-full flex items-center justify-between px-4 py-3 rounded-xl font-black text-zinc-400 hover:text-red-500 hover:bg-red-900/10 transition-all"
+              >
+                <span className="text-sm uppercase tracking-widest">{category.name}</span>
+                <svg className={`w-4 h-4 transition-transform ${openCategory === category.name ? 'rotate-180 text-red-500' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 9l6 6 6-6" />
+                </svg>
+              </button>
+              {openCategory === category.name && (
+                <div className="space-y-1 pl-2">
+                  {category.items.map((item) => (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-all group ${
+                        pathname === item.href 
+                        ? 'bg-red-600 text-white shadow-lg shadow-red-900/20' 
+                        : 'text-zinc-500 hover:bg-red-900/10 hover:text-red-500'
+                      }`}
+                    >
+                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d={item.icon} />
+                      </svg>
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              )}
+            </div>
           ))}
         </nav>
 
