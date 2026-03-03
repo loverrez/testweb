@@ -12,6 +12,15 @@ export default function LoginPage() {
   const [message, setMessage] = useState('');
   const router = useRouter();
 
+  const getThaiErrorMessage = (error: any) => {
+    const message = error.message || '';
+    if (message.includes('Invalid login credentials')) return 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+    if (message.includes('Email not confirmed')) return 'กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ';
+    if (message.includes('Failed to fetch')) return 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ (กรุณาตรวจสอบการตั้งค่า API หรืออินเทอร์เน็ต)';
+    if (message.includes('User not found')) return 'ไม่พบชื่อผู้ใช้นี้ในระบบ';
+    return message;
+  };
+
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -22,9 +31,6 @@ export default function LoginPage() {
 
       // Special handling for Admin (admin/admin)
       if (identifier === 'admin' && password === 'admin') {
-        // We will try to sign in with a fixed admin email if it exists
-        // or redirect to a mock state if you just want to test.
-        // For a real system, we'll use 'admin@admin.com' as the internal email for the 'admin' username.
         email = 'admin@admin.com'; 
       } else if (!identifier.includes('@')) {
         // Standard username lookup
@@ -35,7 +41,7 @@ export default function LoginPage() {
           .single();
         
         if (profileError || !profile) {
-          throw new Error('ไม่พบชื่อผู้ใช้นี้ในระบบ กรุณาตรวจสอบอีกครั้งหรือใช้อีเมลในการเข้าสู่ระบบ');
+          throw new Error('User not found');
         }
         
         email = profile.email;
@@ -53,11 +59,7 @@ export default function LoginPage() {
         router.push('/');
       }, 1500);
     } catch (error: any) {
-      let errorMsg = error.message;
-      if (errorMsg === 'Invalid login credentials') {
-        errorMsg = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
-      }
-      setMessage('เกิดข้อผิดพลาด: ' + errorMsg);
+      setMessage('เกิดข้อผิดพลาด: ' + getThaiErrorMessage(error));
     } finally {
       setLoading(false);
     }

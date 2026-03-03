@@ -20,6 +20,15 @@ export default function RegisterPage() {
   const [message, setMessage] = useState('');
   const router = useRouter();
 
+  const getThaiErrorMessage = (error: any) => {
+    const message = error.message || '';
+    if (message.includes('User already registered')) return 'อีเมลนี้ถูกใช้งานไปแล้ว';
+    if (message.includes('Password is too short')) return 'รหัสผ่านต้องมีความยาวอย่างน้อย 6 ตัวอักษร';
+    if (message.includes('Failed to fetch')) return 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ (กรุณาตรวจสอบการตั้งค่า API หรืออินเทอร์เน็ต)';
+    if (message.includes('unique constraint "profiles_username_key"')) return 'ชื่อผู้ใช้นี้ถูกใช้งานไปแล้ว';
+    return message;
+  };
+
   useEffect(() => {
     const script = document.createElement('script');
     script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
@@ -40,7 +49,7 @@ export default function RegisterPage() {
     setMessage('');
 
     if (password !== verifyPassword) {
-      setMessage('รหัสผ่านไม่ตรงกัน');
+      setMessage('รหัสผ่านไม่ตรงกัน กรุณาตรวจสอบอีกครั้ง');
       setLoading(false);
       return;
     }
@@ -60,16 +69,13 @@ export default function RegisterPage() {
 
       if (signUpError) throw signUpError;
       
-      // 2. Since we want auto-login and possibly no email confirmation
-      // If Supabase is configured for no-confirm, signUpData will contain session
+      // 2. Handle success/auto-login
       if (signUpData.session) {
         setMessage('สมัครสมาชิกสำเร็จ! กำลังเข้าสู่ระบบ...');
         setTimeout(() => router.push('/'), 1500);
       } else {
-        // If still need confirmation but user wants instant, we might need to inform them
-        // or if it's already auto-confirmed, it works.
-        setMessage('สมัครสมาชิกสำเร็จ! กรุณารอสักครู่...');
-        // Try to sign in immediately just in case
+        setMessage('สมัครสมาชิกสำเร็จ! ระบบกำลังนำคุณไปที่หน้าเข้าสู่ระบบ...');
+        // Try to sign in immediately for auto-login
         const { error: signInError } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -77,12 +83,11 @@ export default function RegisterPage() {
         if (!signInError) {
           setTimeout(() => router.push('/'), 1500);
         } else {
-          setMessage('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบด้วยบัญชีใหม่');
           setTimeout(() => router.push('/login'), 2000);
         }
       }
     } catch (error: any) {
-      setMessage('เกิดข้อผิดพลาด: ' + error.message);
+      setMessage('เกิดข้อผิดพลาด: ' + getThaiErrorMessage(error));
     } finally {
       setLoading(false);
     }
