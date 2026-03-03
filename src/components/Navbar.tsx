@@ -102,7 +102,7 @@ export default function Navbar({
         </Link>
         
         <div className="flex items-center gap-6">
-          <Link href="/" className="text-sm font-medium text-zinc-400 hover:text-red-500 transition-colors relative group">
+          <Link href="/home" className="text-sm font-medium text-zinc-400 hover:text-red-500 transition-colors relative group">
             หน้าหลัก
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></span>
           </Link>
