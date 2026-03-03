@@ -15,7 +15,7 @@ export default function LoginPage() {
   const getThaiErrorMessage = (error: any) => {
     const message = error.message || '';
     if (message.includes('Invalid login credentials')) return 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
-    if (message.includes('Email not confirmed')) return 'กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ';
+    if (message.includes('Email not confirmed')) return 'กรุณายืนยันอีเมลของคุณก่อนเข้าสู่ระบบ (หรือตรวจสอบการตั้งค่า Auto-confirm ใน Supabase)';
     if (message.includes('Failed to fetch')) return 'ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้ (กรุณาตรวจสอบการตั้งค่า API หรืออินเทอร์เน็ต)';
     if (message.includes('User not found')) return 'ไม่พบชื่อผู้ใช้นี้ในระบบ';
     return message;
@@ -29,11 +29,12 @@ export default function LoginPage() {
     try {
       let email = identifier;
 
-      // Special handling for Admin (admin/admin)
-      if (identifier === 'admin' && password === 'admin') {
-        email = 'admin@admin.com'; 
+      // 1. Resolve email from username
+      if (identifier.toLowerCase() === 'admin') {
+        // Force admin username to use admin@admin.com
+        email = 'admin@admin.com';
       } else if (!identifier.includes('@')) {
-        // Standard username lookup
+        // Standard username lookup in profiles table
         const { data: profile, error: profileError } = await supabase
           .from('profiles')
           .select('email')
@@ -47,6 +48,7 @@ export default function LoginPage() {
         email = profile.email;
       }
 
+      // 2. Sign in with the resolved email
       const { data, error } = await supabase.auth.signInWithPassword({
         email: email,
         password,
