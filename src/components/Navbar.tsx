@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from 'react';
 import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
-export default function Navbar() {
+export default function Navbar({ siteName = "NEXTWEB" }: { siteName?: string }) {
   const [user, setUser] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
@@ -60,7 +60,7 @@ export default function Navbar() {
       {/* Main Navbar Frame */}
       <div className="w-full bg-black/60 backdrop-blur-md border border-red-900/50 rounded-2xl px-8 py-4 flex items-center justify-between box-red-glow">
         <Link href="/" className="text-2xl font-black text-red-600 hover:text-red-500 transition-all hover:scale-105 tracking-tighter">
-          NEXT<span className="text-white">WEB</span>
+          {siteName}
         </Link>
         
         <div className="flex items-center gap-6">
@@ -123,7 +123,6 @@ export default function Navbar() {
           <div className="space-y-1">
             {isAdmin && (
               <div className="mb-2">
-                <p className="px-4 py-1.5 text-[10px] font-black text-red-600/50 uppercase tracking-widest">หมวดหมู่: จัดการเว็บไซต์</p>
                 <Link 
                   href="/admin"
                   onClick={() => setIsMenuOpen(false)}

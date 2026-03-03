@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
+import { revalidateSiteSettings } from '@/app/actions';
 
 export default function AdminSettings() {
   const [siteName, setSiteName] = useState('');
@@ -9,6 +11,7 @@ export default function AdminSettings() {
   const [siteDescription, setSiteDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
     fetchSettings();
@@ -44,7 +47,13 @@ export default function AdminSettings() {
         });
 
       if (error) throw error;
-      setMessage('บันทึกการตั้งค่าสำเร็จ! ข้อมูลจะอัปเดตในการเข้าชมครั้งถัดไป');
+
+      // Trigger server-side revalidation
+      await revalidateSiteSettings();
+      // Refresh client-side route cache
+      router.refresh();
+
+      setMessage('บันทึกการตั้งค่าสำเร็จ! ข้อมูลอัปเดตเรียบร้อยแล้ว');
     } catch (error: any) {
       setMessage('เกิดข้อผิดพลาด: ' + error.message);
     } finally {

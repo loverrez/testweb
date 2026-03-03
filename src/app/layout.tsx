@@ -39,18 +39,24 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  // Fetch site settings for UI
+  const { data } = await supabase
+    .from('site_settings')
+    .select('site_name')
+    .single();
+
   return (
     <html lang="en">
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
       >
         <div className="bg-3d-grid" />
-        <ConditionalNavbar />
+        <ConditionalNavbar siteName={data?.site_name || "NextWeb"} />
         <MainContentWrapper>
           {children}
         </MainContentWrapper>

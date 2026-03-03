@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import Navbar from './Navbar';
 
-export default function ConditionalNavbar() {
+export default function ConditionalNavbar({ siteName }: { siteName: string }) {
   const pathname = usePathname();
   
   // Hide main navbar on admin routes
@@ -11,5 +11,5 @@ export default function ConditionalNavbar() {
     return null;
   }
 
-  return <Navbar />;
+  return <Navbar siteName={siteName} />;
 }
