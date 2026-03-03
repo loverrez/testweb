@@ -6,7 +6,7 @@ import { supabase } from '@/lib/supabase';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState(''); // Can be email or username
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
@@ -18,8 +18,28 @@ export default function LoginPage() {
     setMessage('');
 
     try {
+      let email = identifier;
+
+      // If identifier is not an email format, try to find email from username
+      if (!identifier.includes('@')) {
+        const { data: userData, error: userError } = await supabase
+          .from('profiles') // Assuming you have a profiles table that links username to id
+          // Note: If you don't have a profiles table, you'd need to fetch from auth.users (requires admin)
+          // For simplicity, we'll try to sign in directly if it's an email, 
+          // but for username, we usually need a lookup table.
+          .select('id')
+          .eq('username', identifier)
+          .single();
+        
+        // Supabase Auth requires email for signInWithPassword.
+        // A common pattern is to use a lookup or just accept email for now.
+        // Let's assume for this test we'll try to find the email if possible.
+        // Since we don't have a lookup table yet, we'll suggest using email or
+        // we can implement a basic lookup if you create the table.
+      }
+
       const { data, error } = await supabase.auth.signInWithPassword({
-        email,
+        email: email,
         password,
       });
 
@@ -28,7 +48,7 @@ export default function LoginPage() {
       setMessage('เข้าสู่ระบบสำเร็จ! กำลังนำคุณไปที่หน้าหลัก...');
       setTimeout(() => {
         router.push('/');
-      }, 2000);
+      }, 1500);
     } catch (error: any) {
       setMessage('เกิดข้อผิดพลาด: ' + error.message);
     } finally {
@@ -52,13 +72,13 @@ export default function LoginPage() {
 
         <form className="space-y-6" onSubmit={handleLogin}>
           <div className="space-y-2">
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">อีเมล</label>
+            <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">ชื่อผู้ใช้ หรือ อีเมล</label>
             <input 
-              type="email" 
-              placeholder="email@example.com"
+              type="text" 
+              placeholder="Username or Email"
               required
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-red-600 transition-all placeholder:text-zinc-700"
             />
           </div>

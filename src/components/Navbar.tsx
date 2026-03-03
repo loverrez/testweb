@@ -1,6 +1,56 @@
+'use client';
+
 import Link from 'next/link';
+import { useEffect, useState, useRef } from 'react';
+import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 export default function Navbar() {
+  const [user, setUser] = useState<any>(null);
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isAdmin, setIsAdmin] = useState(false);
+  const menuRef = useRef<HTMLDivElement>(null);
+  const router = useRouter();
+
+  useEffect(() => {
+    // 1. Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        setIsAdmin(session.user.user_metadata?.role === 'admin');
+      }
+    });
+
+    // 2. Listen for auth changes
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        setIsAdmin(session.user.user_metadata?.role === 'admin');
+      } else {
+        setIsAdmin(false);
+      }
+    });
+
+    // 3. Close menu when clicking outside
+    const handleClickOutside = (event: MouseEvent) => {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setIsMenuOpen(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+
+    return () => {
+      subscription.unsubscribe();
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    setIsMenuOpen(false);
+    router.push('/');
+  };
+
   return (
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
       <div className="bg-black/60 backdrop-blur-md border border-red-900/50 rounded-2xl px-8 py-4 flex items-center justify-between box-red-glow">
@@ -8,26 +58,78 @@ export default function Navbar() {
           NEXT<span className="text-white">WEB</span>
         </Link>
         
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-6">
           <Link href="/" className="text-sm font-medium text-zinc-400 hover:text-red-500 transition-colors relative group">
             หน้าแรก
             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all group-hover:w-full"></span>
           </Link>
+
           <div className="h-4 w-px bg-zinc-800"></div>
-          <div className="flex items-center gap-4">
-            <Link 
-              href="/login" 
-              className="px-5 py-2 text-sm font-semibold text-white hover:text-red-500 transition-all"
-            >
-              เข้าสู่ระบบ
-            </Link>
-            <Link 
-              href="/register" 
-              className="px-6 py-2.5 bg-red-700 hover:bg-red-600 text-white rounded-xl text-sm font-bold transition-all hover:shadow-[0_0_20px_rgba(230,0,0,0.5)] active:scale-95"
-            >
-              สมัครสมาชิก
-            </Link>
-          </div>
+
+          {!user ? (
+            <div className="flex items-center gap-4">
+              {/* Login Icon Button */}
+              <Link 
+                href="/login" 
+                title="เข้าสู่ระบบ"
+                className="p-2 text-zinc-400 hover:text-red-500 transition-all hover:scale-110"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
+              </Link>
+              
+              {/* Register Icon Button */}
+              <Link 
+                href="/register" 
+                title="สมัครสมาชิก"
+                className="p-2.5 bg-red-700/20 border border-red-700/50 text-red-500 rounded-xl hover:bg-red-700 hover:text-white transition-all hover:shadow-[0_0_15px_rgba(230,0,0,0.3)]"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" x2="19" y1="8" y2="14"/><line x1="22" x2="16" y1="11" y2="11"/></svg>
+              </Link>
+            </div>
+          ) : (
+            <div className="relative" ref={menuRef}>
+              {/* User Avatar Circle */}
+              <button 
+                onClick={() => setIsMenuOpen(!isMenuOpen)}
+                className="w-10 h-10 rounded-full border-2 border-red-600 overflow-hidden hover:scale-105 transition-all box-red-glow relative group"
+              >
+                <img 
+                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} 
+                  alt="Avatar"
+                  className="w-full h-full object-cover bg-zinc-900"
+                />
+                <div className="absolute inset-0 bg-red-600/10 group-hover:bg-transparent transition-colors"></div>
+              </button>
+
+              {/* Dropdown Menu Popup */}
+              {isMenuOpen && (
+                <div className="absolute top-14 right-0 w-56 bg-zinc-950 border border-red-900/50 rounded-2xl p-2 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in duration-200">
+                  <div className="px-4 py-3 border-b border-zinc-900 mb-2">
+                    <p className="text-xs font-bold text-red-600 uppercase tracking-widest">ยินดีต้อนรับ</p>
+                    <p className="text-sm font-bold text-white truncate">{user.user_metadata?.username || user.email}</p>
+                  </div>
+                  
+                  {isAdmin && (
+                    <Link 
+                      href="/admin"
+                      className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-zinc-300 hover:bg-red-900/20 hover:text-red-500 rounded-xl transition-all group"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-12 transition-transform"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 17V7h5a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-5"/><path d="M14 13h1"/></svg>
+                      เข้าสู่หลังบ้าน
+                    </Link>
+                  )}
+
+                  <button 
+                    onClick={handleLogout}
+                    className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-zinc-300 hover:bg-red-900/20 hover:text-red-500 rounded-xl transition-all group"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                    ออกจากระบบ
+                  </button>
+                </div>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </nav>

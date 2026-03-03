@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { supabase } from '@/lib/supabase';
+import { useRouter } from 'next/navigation';
 
 declare global {
   interface Window {
@@ -17,9 +18,9 @@ export default function RegisterPage() {
   const [verifyPassword, setVerifyPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
+  const router = useRouter();
 
   useEffect(() => {
-    // Load Turnstile script
     const script = document.createElement('script');
     script.src = "https://challenges.cloudflare.com/turnstile/v0/api.js";
     script.async = true;
@@ -45,19 +46,41 @@ export default function RegisterPage() {
     }
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      // 1. Register with metadata
+      const { data: signUpData, error: signUpError } = await supabase.auth.signUp({
         email,
         password,
         options: {
           data: {
             username: username,
+            role: 'user', // Default role
           }
         }
       });
 
-      if (error) throw error;
+      if (signUpError) throw signUpError;
       
-      setMessage('สมัครสมาชิกสำเร็จ! กรุณาตรวจสอบอีเมลของคุณเพื่อยืนยัน');
+      // 2. Since we want auto-login and possibly no email confirmation
+      // If Supabase is configured for no-confirm, signUpData will contain session
+      if (signUpData.session) {
+        setMessage('สมัครสมาชิกสำเร็จ! กำลังเข้าสู่ระบบ...');
+        setTimeout(() => router.push('/'), 1500);
+      } else {
+        // If still need confirmation but user wants instant, we might need to inform them
+        // or if it's already auto-confirmed, it works.
+        setMessage('สมัครสมาชิกสำเร็จ! กรุณารอสักครู่...');
+        // Try to sign in immediately just in case
+        const { error: signInError } = await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
+        if (!signInError) {
+          setTimeout(() => router.push('/'), 1500);
+        } else {
+          setMessage('สมัครสมาชิกสำเร็จ! กรุณาเข้าสู่ระบบด้วยบัญชีใหม่');
+          setTimeout(() => router.push('/login'), 2000);
+        }
+      }
     } catch (error: any) {
       setMessage('เกิดข้อผิดพลาด: ' + error.message);
     } finally {
