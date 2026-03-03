@@ -15,6 +15,8 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const dynamic = 'force-dynamic';
+
 export async function generateMetadata(): Promise<Metadata> {
   // Fetch site settings from Supabase
   const { data } = await supabase
@@ -22,22 +24,28 @@ export async function generateMetadata(): Promise<Metadata> {
     .select('*')
     .single();
 
+  const siteLogo = data?.site_logo || '/favicon.ico';
+  const siteName = data?.site_name || "NextWeb - Black & Red Edition";
+  const siteDesc = data?.site_description || "Modern web with Next.js";
+
   return {
-    title: data?.site_name || "NextWeb - Black & Red Edition",
-    description: data?.site_description || "Modern web with Next.js",
+    title: siteName,
+    description: siteDesc,
     openGraph: {
-      title: data?.site_name || "NextWeb",
-      description: data?.site_description || "Modern web with Next.js",
+      title: siteName,
+      description: siteDesc,
       images: data?.site_logo ? [data.site_logo] : [],
     },
     twitter: {
       card: 'summary_large_image',
-      title: data?.site_name || "NextWeb",
-      description: data?.site_description || "Modern web with Next.js",
+      title: siteName,
+      description: siteDesc,
       images: data?.site_logo ? [data.site_logo] : [],
     },
     icons: {
-      icon: data?.site_logo || '/favicon.ico',
+      icon: siteLogo,
+      shortcut: siteLogo,
+      apple: siteLogo,
     },
   };
 }
@@ -50,7 +58,7 @@ export default async function RootLayout({
   // Fetch site settings for UI
   const { data } = await supabase
     .from('site_settings')
-    .select('site_name, site_logo')
+    .select('*')
     .single();
 
   return (

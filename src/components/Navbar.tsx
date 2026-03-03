@@ -66,13 +66,17 @@ export default function Navbar({
       {/* Main Navbar Frame */}
       <div className="w-full bg-black/60 backdrop-blur-md border border-red-900/50 rounded-2xl px-8 py-4 flex items-center justify-between box-red-glow">
         <Link href="/" className="flex items-center gap-3 text-2xl font-black text-red-600 hover:text-red-500 transition-all hover:scale-105 tracking-tighter">
-          {siteLogo && (
+          {siteLogo ? (
             <img 
               src={siteLogo} 
               alt="Logo" 
-              className="w-8 h-8 object-contain rounded-full border border-red-900/50" 
+              className="w-10 h-10 object-cover rounded-full border-2 border-red-900/50" 
+              onError={(e) => {
+                // Fallback if image fails to load
+                e.currentTarget.style.display = 'none';
+              }}
             />
-          )}
+          ) : null}
           <span>{siteName}</span>
         </Link>
         
