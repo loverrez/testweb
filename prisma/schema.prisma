@@ -24,3 +24,14 @@ model SiteSettings {
 
   @@map("site_settings")
 }
+
+model Announcement {
+  id         Int      @id @default(autoincrement())
+  emoji      String   @default("📢")
+  content    String
+  is_active  Boolean  @default(true)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+
+  @@map("announcements")
+}
