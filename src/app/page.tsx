@@ -24,52 +24,78 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[90vh] text-center px-6 relative overflow-hidden">
-      {/* Dynamic Background Elements */}
-      <div className="absolute top-1/4 -left-20 w-72 h-72 bg-red-600/10 blur-[120px] rounded-full -z-10 animate-pulse"></div>
-      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-red-900/10 blur-[150px] rounded-full -z-10"></div>
+    <div className="flex flex-col items-center justify-center min-h-[90vh] text-center px-6 relative overflow-hidden font-prompt">
+      {/* Premium Background Glows */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-red-600/10 blur-[150px] rounded-full -z-10 animate-pulse"></div>
+      <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_center,_var(--tw-gradient-stops))] from-red-900/5 via-transparent to-transparent -z-10"></div>
       
-      <div className="flex flex-col items-center gap-6 md:gap-10 animate-in fade-in zoom-in duration-1000 max-w-5xl">
-        {/* Logo Section with Premium Glow */}
-        {siteLogo && (
-          <div className="relative group">
-            <div className="absolute -inset-2 bg-gradient-to-r from-red-600 via-red-900 to-red-600 rounded-full blur-md opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-500 animate-spin-slow"></div>
-            <img 
-              src={siteLogo} 
-              alt="Logo" 
-              className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-56 md:h-56 object-cover rounded-full border-2 border-white/10 shadow-2xl transition-transform duration-700 group-hover:scale-105"
-            />
+      <div className="flex flex-col items-center gap-12 md:gap-16 animate-in fade-in duration-1000 max-w-4xl">
+        
+        {/* Language Selection Section (Deity Style) */}
+        <div className="space-y-6">
+          <div className="flex flex-col items-center gap-2">
+            <h2 className="text-white text-lg md:text-xl font-black uppercase tracking-[0.3em]">Select Language</h2>
+            <p className="text-zinc-500 text-sm font-bold uppercase tracking-widest">เลือกภาษาของเว็บ</p>
           </div>
-        )}
+          
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <Link 
+              href="/home" 
+              className="group relative w-64 px-8 py-4 bg-zinc-950/50 border border-white/5 rounded-2xl hover:border-red-600/50 transition-all duration-500 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-red-600/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+              <div className="relative z-10 flex flex-col items-center gap-1">
+                <span className="text-white font-black uppercase tracking-widest text-sm">English</span>
+                <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-tighter group-hover:text-red-500/70 transition-colors">United States</span>
+              </div>
+            </Link>
 
-        {/* Site Name with Enhanced Typography */}
-        <div className="space-y-4">
-          <h1 className="text-5xl sm:text-7xl md:text-9xl font-black text-white tracking-tighter uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
-            {siteName}
-          </h1>
-          <div className="h-1.5 w-24 md:w-40 bg-gradient-to-r from-transparent via-red-600 to-transparent mx-auto rounded-full"></div>
+            <Link 
+              href="/home" 
+              className="group relative w-64 px-8 py-4 bg-zinc-950/50 border border-white/5 rounded-2xl hover:border-red-600/50 transition-all duration-500 overflow-hidden"
+            >
+              <div className="absolute inset-0 bg-red-600/5 translate-y-full group-hover:translate-y-0 transition-transform duration-500"></div>
+              <div className="relative z-10 flex flex-col items-center gap-1">
+                <span className="text-white font-black uppercase tracking-widest text-sm">ภาษาไทย</span>
+                <span className="text-zinc-500 text-[10px] font-bold uppercase tracking-tighter group-hover:text-red-500/70 transition-colors">ประเทศไทย</span>
+              </div>
+            </Link>
+          </div>
+
+          <p className="text-zinc-600 text-[10px] font-bold uppercase tracking-[0.2em] mt-4">
+            You can change the language at any time • คุณสามารถเปลี่ยนภาษาได้ทุกเมื่อ
+          </p>
         </div>
 
-        {/* Action Button - Responsive & Premium */}
-        <div className="mt-8 md:mt-14 w-full sm:w-auto">
-          <Link 
-            href="/home" 
-            className="group relative inline-flex items-center justify-center px-8 py-4 md:px-14 md:py-6 font-black text-white transition-all duration-300 bg-red-700 rounded-full sm:w-auto hover:bg-red-600 hover:shadow-[0_0_60px_rgba(230,0,0,0.4)] active:scale-[0.98] overflow-hidden"
-          >
-            <span className="relative z-10 flex items-center gap-3 uppercase text-sm md:text-lg">
-              เริ่มต้นใช้งานเลย!
-              <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M13 7l5 5m0 0l-5 5m5-5H6" />
-              </svg>
-            </span>
-            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-500"></div>
-          </Link>
+        {/* Divider */}
+        <div className="w-24 h-px bg-gradient-to-r from-transparent via-white/10 to-transparent"></div>
+
+        {/* Brand Section */}
+        <div className="flex flex-col items-center gap-8">
+          {siteLogo && (
+            <div className="relative">
+              <div className="absolute -inset-4 bg-red-600/20 blur-2xl rounded-full opacity-50"></div>
+              <img 
+                src={siteLogo} 
+                alt="Logo" 
+                className="relative w-24 h-24 md:w-32 md:h-32 object-cover rounded-3xl border border-white/10 shadow-2xl rotate-3 hover:rotate-0 transition-transform duration-700"
+              />
+            </div>
+          )}
+          
+          <div className="space-y-2">
+            <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase">
+              {siteName}
+            </h1>
+            <div className="h-1 w-12 bg-red-600 mx-auto rounded-full"></div>
+          </div>
         </div>
+
       </div>
 
-      {/* Footer Info (Optional for Landing) */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-20 text-[10px] uppercase tracking-[0.5em] font-bold text-white whitespace-nowrap hidden sm:block">
-        Crafted with Excellence • 2026
+      {/* Footer Branding */}
+      <div className="absolute bottom-12 left-1/2 -translate-x-1/2 flex items-center gap-4 opacity-30 grayscale hover:opacity-100 hover:grayscale-0 transition-all duration-700">
+        <span className="text-[10px] font-black text-white uppercase tracking-[0.5em]">Powered by Elite Technology</span>
       </div>
     </div>
   );
