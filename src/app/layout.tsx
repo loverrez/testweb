@@ -1,7 +1,8 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/Navbar";
+import ConditionalNavbar from "@/components/ConditionalNavbar";
+import MainContentWrapper from "@/components/MainContentWrapper";
 import { supabase } from "@/lib/supabase";
 
 const geistSans = Geist({
@@ -49,10 +50,10 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white`}
       >
         <div className="bg-3d-grid" />
-        <Navbar />
-        <main className="pt-32">
+        <ConditionalNavbar />
+        <MainContentWrapper>
           {children}
-        </main>
+        </MainContentWrapper>
       </body>
     </html>
   );

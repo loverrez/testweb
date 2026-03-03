@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react';
 import { supabase } from '@/lib/supabase';
-import { useRouter } from 'next/navigation';
 
 export default function AdminSettings() {
   const [siteName, setSiteName] = useState('');
@@ -10,22 +9,10 @@ export default function AdminSettings() {
   const [siteDescription, setSiteDescription] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState('');
-  const [isAdmin, setIsAdmin] = useState(false);
-  const router = useRouter();
 
   useEffect(() => {
-    checkAdmin();
     fetchSettings();
   }, []);
-
-  const checkAdmin = async () => {
-    const { data: { session } } = await supabase.auth.getSession();
-    if (!session || session.user.user_metadata?.role !== 'admin') {
-      router.push('/');
-    } else {
-      setIsAdmin(true);
-    }
-  };
 
   const fetchSettings = async () => {
     const { data, error } = await supabase
@@ -49,7 +36,7 @@ export default function AdminSettings() {
       const { error } = await supabase
         .from('site_settings')
         .upsert({ 
-          id: 1, // Fixed ID for single settings row
+          id: 1, 
           site_name: siteName,
           site_logo: siteLogo,
           site_description: siteDescription,
@@ -57,7 +44,7 @@ export default function AdminSettings() {
         });
 
       if (error) throw error;
-      setMessage('บันทึกการตั้งค่าสำเร็จ! (ข้อมูล SEO จะอัปเดตในการเข้าชมครั้งถัดไป)');
+      setMessage('บันทึกการตั้งค่าสำเร็จ! ข้อมูลจะอัปเดตในการเข้าชมครั้งถัดไป');
     } catch (error: any) {
       setMessage('เกิดข้อผิดพลาด: ' + error.message);
     } finally {
@@ -65,13 +52,11 @@ export default function AdminSettings() {
     }
   };
 
-  if (!isAdmin) return null;
-
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8">
+    <div className="space-y-10 animate-in fade-in duration-500">
       <div className="mb-8">
-        <h1 className="text-3xl font-black text-white">จัดการ<span className="text-red-600">เว็บไซต์</span></h1>
-        <p className="text-zinc-500 mt-2">แก้ไขข้อมูลพื้นฐานของเว็บไซต์และ SEO</p>
+        <h2 className="text-zinc-500 text-sm font-black uppercase tracking-[0.2em] mb-2">หมวดหมู่: จัดการเว็บไซต์</h2>
+        <h1 className="text-3xl font-black text-white">หัวข้อ: <span className="text-red-600">ตั้งค่าเว็บไซต์</span></h1>
       </div>
 
       {message && (
@@ -80,63 +65,50 @@ export default function AdminSettings() {
         </div>
       )}
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Sidebar Categories */}
-        <div className="md:col-span-1 space-y-2">
-          <div className="p-4 bg-red-900/10 border border-red-900/30 rounded-xl">
-            <p className="text-xs font-black text-red-600 uppercase tracking-widest mb-4">หมวดหมู่: จัดการเว็บไซต์</p>
-            <button className="w-full text-left px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-bold shadow-lg shadow-red-900/20">
-              หัวข้อ: ตั้งค่าเว็บไซต์
-            </button>
-          </div>
+      <form onSubmit={handleSave} className="space-y-6 max-w-2xl bg-zinc-950 border border-zinc-900 p-10 rounded-3xl box-red-glow">
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">ชื่อเว็บไซต์ (Site Name)</label>
+          <input 
+            type="text" 
+            value={siteName}
+            onChange={(e) => setSiteName(e.target.value)}
+            placeholder="NextWeb - Black & Red Edition"
+            className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-red-600 transition-all placeholder:text-zinc-800"
+          />
         </div>
 
-        {/* Main Content Form */}
-        <form onSubmit={handleSave} className="md:col-span-2 space-y-6 bg-zinc-950/50 border border-zinc-900 p-8 rounded-3xl box-red-glow">
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">ชื่อเว็บไซต์ (Site Name)</label>
-            <input 
-              type="text" 
-              value={siteName}
-              onChange={(e) => setSiteName(e.target.value)}
-              placeholder="NextWeb - Black & Red Edition"
-              className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-red-600 transition-all"
-            />
-          </div>
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">โลโก้เว็บไซต์ (URL รูปภาพ)</label>
+          <input 
+            type="text" 
+            value={siteLogo}
+            onChange={(e) => setSiteLogo(e.target.value)}
+            placeholder="https://example.com/logo.png"
+            className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-red-600 transition-all placeholder:text-zinc-800"
+          />
+        </div>
 
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">โลโก้เว็บไซต์ (URL รูปภาพ)</label>
-            <input 
-              type="text" 
-              value={siteLogo}
-              onChange={(e) => setSiteLogo(e.target.value)}
-              placeholder="https://example.com/logo.png"
-              className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-red-600 transition-all"
-            />
-          </div>
+        <div className="space-y-2">
+          <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">รายละเอียดเว็บไซต์ (Description / SEO)</label>
+          <textarea 
+            value={siteDescription}
+            onChange={(e) => setSiteDescription(e.target.value)}
+            rows={5}
+            placeholder="อธิบายเว็บไซต์ของคุณเพื่อแสดงผลเวลาแชร์ลิงค์ลง Facebook, Discord..."
+            className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-red-600 transition-all resize-none placeholder:text-zinc-800"
+          />
+        </div>
 
-          <div className="space-y-2">
-            <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">รายละเอียดเว็บไซต์ (Description / SEO)</label>
-            <textarea 
-              value={siteDescription}
-              onChange={(e) => setSiteDescription(e.target.value)}
-              rows={4}
-              placeholder="อธิบายเว็บไซต์ของคุณเพื่อแสดงผลเวลาแชร์ลิงค์ลง Facebook, Discord..."
-              className="w-full bg-black border border-zinc-800 rounded-2xl px-5 py-4 text-white focus:outline-none focus:border-red-600 transition-all resize-none"
-            />
-          </div>
-
-          <div className="pt-4">
-            <button 
-              type="submit"
-              disabled={loading}
-              className="w-full bg-red-700 hover:bg-red-600 text-white font-black py-4 rounded-2xl transition-all hover:shadow-[0_0_30px_rgba(230,0,0,0.4)] active:scale-[0.98] uppercase tracking-widest text-sm disabled:opacity-50"
-            >
-              {loading ? 'กำลังบันทึก...' : 'บันทึกการตั้งค่า'}
-            </button>
-          </div>
-        </form>
-      </div>
+        <div className="pt-6">
+          <button 
+            type="submit"
+            disabled={loading}
+            className="w-full bg-red-700 hover:bg-red-600 text-white font-black py-5 rounded-2xl transition-all hover:shadow-[0_0_40px_rgba(230,0,0,0.4)] active:scale-[0.98] uppercase tracking-widest text-sm disabled:opacity-50"
+          >
+            {loading ? 'กำลังบันทึก...' : 'บันทึกการตั้งค่าทั้งหมด'}
+          </button>
+        </div>
+      </form>
     </div>
   );
 }
