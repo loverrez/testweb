@@ -13,6 +13,7 @@ export default function AdminLayout({
   const [isAdmin, setIsAdmin] = useState(false);
   const [loading, setLoading] = useState(true);
   const [openCategory, setOpenCategory] = useState<string | null>('ภาพรวม');
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
 
@@ -61,41 +62,60 @@ export default function AdminLayout({
   ];
 
   return (
-    <div className="min-h-screen bg-[#050505] text-white flex">
+    <div className="min-h-screen bg-[#050505] text-white flex flex-col lg:flex-row overflow-hidden">
+      {/* Mobile Header */}
+      <div className="lg:hidden flex items-center justify-between p-6 bg-zinc-950 border-b border-white/5">
+        <Link href="/" className="text-xl font-black text-red-600 tracking-tighter uppercase">
+          ADMIN<span className="text-white">PANEL</span>
+        </Link>
+        <button 
+          onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+          className="p-2 text-zinc-400 hover:text-white transition-colors"
+        >
+          <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d={isSidebarOpen ? "M6 18L18 6" : "M4 6h16M4 12h16M4 18h16"} />
+          </svg>
+        </button>
+      </div>
+
       {/* Admin Sidebar */}
-      <aside className="w-72 bg-zinc-950 border-r border-red-900/20 flex flex-col fixed inset-y-0">
-        <div className="p-8">
-          <Link href="/" className="text-2xl font-black text-red-600 tracking-tighter">
-            ADMIN<span className="text-white">PANEL</span>
+      <aside className={`
+        fixed inset-y-0 left-0 z-50 w-72 bg-zinc-950 border-r border-white/5 flex flex-col transform transition-transform duration-300 ease-in-out lg:relative lg:translate-x-0
+        ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+      `}>
+        <div className="p-10 hidden lg:block">
+          <Link href="/" className="text-2xl font-black text-red-600 tracking-tighter uppercase group">
+            ADMIN<span className="text-white group-hover:text-red-500 transition-colors">PANEL</span>
           </Link>
         </div>
 
-        <nav className="flex-1 px-4 space-y-3">
+        <nav className="flex-1 px-6 space-y-4 lg:mt-0 mt-10">
           {menuCategories.map((category) => (
             <div key={category.name} className="space-y-2">
               <button
                 type="button"
                 onClick={() => setOpenCategory(openCategory === category.name ? null : category.name)}
-                className="w-full flex items-center justify-between px-4 py-3 rounded-xl font-black text-zinc-400 hover:text-red-500 hover:bg-red-900/10 transition-all"
+                className="w-full flex items-center justify-between px-4 py-3 rounded-2xl font-black text-zinc-500 hover:text-white hover:bg-white/5 transition-all"
               >
-                <span className="text-sm uppercase tracking-widest">{category.name}</span>
-                <svg className={`w-4 h-4 transition-transform ${openCategory === category.name ? 'rotate-180 text-red-500' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <span className="text-[10px] uppercase tracking-[0.2em]">{category.name}</span>
+                <svg className={`w-4 h-4 transition-transform duration-300 ${openCategory === category.name ? 'rotate-180 text-red-500' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 9l6 6 6-6" />
                 </svg>
               </button>
               {openCategory === category.name && (
-                <div className="space-y-1 pl-2">
+                <div className="space-y-1 ml-2 border-l-2 border-red-900/20 pl-4 animate-in fade-in slide-in-from-left-2 duration-300">
                   {category.items.map((item) => (
                     <Link
                       key={item.href}
                       href={item.href}
-                      className={`flex items-center gap-4 px-4 py-3 rounded-xl font-bold transition-all group ${
+                      onClick={() => setIsSidebarOpen(false)}
+                      className={`flex items-center gap-4 px-4 py-3 rounded-xl text-sm font-bold transition-all ${
                         pathname === item.href 
-                        ? 'bg-red-600 text-white shadow-lg shadow-red-900/20' 
-                        : 'text-zinc-500 hover:bg-red-900/10 hover:text-red-500'
+                        ? 'bg-red-700 text-white shadow-xl shadow-red-900/20' 
+                        : 'text-zinc-500 hover:text-white'
                       }`}
                     >
-                      <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d={item.icon} />
                       </svg>
                       {item.name}
@@ -107,34 +127,44 @@ export default function AdminLayout({
           ))}
         </nav>
 
-        <div className="p-4 border-t border-zinc-900">
+        <div className="p-6 border-t border-white/5">
           <button 
             onClick={handleLogout}
-            className="flex items-center gap-4 w-full px-4 py-3 text-zinc-500 hover:bg-red-900/10 hover:text-red-500 rounded-xl font-bold transition-all"
+            className="flex items-center gap-4 w-full px-6 py-4 text-zinc-500 hover:text-red-500 rounded-2xl font-black text-xs uppercase tracking-widest transition-all"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
             </svg>
-            ออกจากระบบ
+            Sign Out
           </button>
         </div>
       </aside>
 
+      {/* Mobile Sidebar Overlay */}
+      {isSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden"
+          onClick={() => setIsSidebarOpen(false)}
+        />
+      )}
+
       {/* Admin Content */}
-      <main className="flex-1 ml-72 p-10 bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-red-900/5 via-transparent to-transparent">
-        <header className="flex justify-between items-center mb-10">
+      <main className="flex-1 p-6 md:p-12 lg:p-16 overflow-y-auto bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-red-900/5 via-transparent to-transparent">
+        <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6 mb-12 md:mb-16">
           <div>
-            <h2 className="text-zinc-500 text-sm font-black uppercase tracking-widest">ยินดีต้อนรับกลับมา</h2>
-            <h1 className="text-3xl font-black text-white mt-1">แอดมิน <span className="text-red-600">Admin</span></h1>
+            <h2 className="text-zinc-500 text-[10px] font-black uppercase tracking-[0.3em]">Administrator Terminal</h2>
+            <h1 className="text-3xl md:text-4xl font-black text-white mt-2 tracking-tighter uppercase">
+              Control <span className="text-red-600">Center</span>
+            </h1>
           </div>
-          <div className="flex gap-4">
-            <Link href="/" className="px-6 py-2 bg-zinc-900 border border-zinc-800 rounded-xl text-sm font-bold hover:bg-zinc-800 transition-all">
-              กลับสู่หน้าเว็บหลัก
+          <div className="flex gap-4 w-full md:w-auto">
+            <Link href="/" className="flex-1 md:flex-none px-8 py-3 bg-zinc-900 border border-white/5 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-zinc-800 transition-all text-center">
+              Main Site
             </Link>
           </div>
         </header>
 
-        <div className="bg-zinc-950/50 border border-zinc-900 rounded-3xl p-8 min-h-[70vh]">
+        <div className="bg-zinc-950/30 backdrop-blur-md border border-white/5 rounded-[2.5rem] p-6 md:p-10 lg:p-12 shadow-2xl min-h-[70vh]">
           {children}
         </div>
       </main>

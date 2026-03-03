@@ -24,37 +24,57 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] text-center px-4 relative">
-      {/* Glow effect in background */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-red-600/20 blur-[120px] rounded-full -z-10"></div>
+    <div className="flex flex-col items-center justify-center min-h-[90vh] text-center px-6 relative overflow-hidden">
+      {/* Dynamic Background Elements */}
+      <div className="absolute top-1/4 -left-20 w-72 h-72 bg-red-600/10 blur-[120px] rounded-full -z-10 animate-pulse"></div>
+      <div className="absolute bottom-1/4 -right-20 w-96 h-96 bg-red-900/10 blur-[150px] rounded-full -z-10"></div>
       
-      <div className="flex flex-col items-center gap-8 animate-in fade-in zoom-in duration-1000">
-        {/* Logo Section */}
+      <div className="flex flex-col items-center gap-6 md:gap-10 animate-in fade-in zoom-in duration-1000 max-w-5xl">
+        {/* Logo Section with Premium Glow */}
         {siteLogo && (
           <div className="relative group">
-            <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-red-900 rounded-full blur opacity-40 group-hover:opacity-100 transition duration-1000"></div>
+            <div className="absolute -inset-2 bg-gradient-to-r from-red-600 via-red-900 to-red-600 rounded-full blur-md opacity-30 group-hover:opacity-100 transition duration-1000 group-hover:duration-500 animate-spin-slow"></div>
             <img 
               src={siteLogo} 
               alt="Logo" 
-              className="relative w-32 h-32 md:w-48 md:h-48 object-cover rounded-full border-4 border-red-600/50 box-red-glow"
+              className="relative w-28 h-28 sm:w-40 sm:h-40 md:w-56 md:h-56 object-cover rounded-full border-2 border-white/10 shadow-2xl transition-transform duration-700 group-hover:scale-105"
             />
           </div>
         )}
 
-        {/* Site Name */}
-        <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter red-glow uppercase">
-          {siteName}
-        </h1>
+        {/* Site Name with Enhanced Typography */}
+        <div className="space-y-4">
+          <h1 className="text-5xl sm:text-7xl md:text-9xl font-black text-white tracking-tighter uppercase drop-shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+            {siteName}
+          </h1>
+          <div className="h-1.5 w-24 md:w-40 bg-gradient-to-r from-transparent via-red-600 to-transparent mx-auto rounded-full"></div>
+        </div>
 
-        {/* Action Button */}
-        <div className="mt-10">
+        {/* Subtitle / Slogan */}
+        <p className="text-zinc-400 text-sm sm:text-lg md:text-xl font-medium tracking-[0.3em] uppercase opacity-70 max-w-2xl px-4">
+          The Future of Web Innovation & Design
+        </p>
+
+        {/* Action Button - Responsive & Premium */}
+        <div className="mt-8 md:mt-14 w-full sm:w-auto">
           <Link 
             href="/home" 
-            className="px-10 py-5 bg-red-700 hover:bg-red-600 text-white font-black rounded-2xl transition-all hover:scale-110 hover:shadow-[0_0_50px_rgba(230,0,0,0.5)] active:scale-[0.98] uppercase tracking-[0.2em] text-lg border border-red-500/50"
+            className="group relative inline-flex items-center justify-center px-8 py-4 md:px-14 md:py-6 font-black text-white transition-all duration-300 bg-red-700 rounded-full sm:w-auto hover:bg-red-600 hover:shadow-[0_0_60px_rgba(230,0,0,0.4)] active:scale-[0.98] overflow-hidden"
           >
-            เริ่มต้นใช้งานเลย!
+            <span className="relative z-10 flex items-center gap-3 uppercase tracking-[0.2em] text-sm md:text-lg">
+              เริ่มต้นใช้งานเลย!
+              <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+              </svg>
+            </span>
+            <div className="absolute inset-0 -translate-x-full group-hover:translate-x-0 bg-gradient-to-r from-transparent via-white/10 to-transparent transition-transform duration-500"></div>
           </Link>
         </div>
+      </div>
+
+      {/* Footer Info (Optional for Landing) */}
+      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 opacity-20 text-[10px] uppercase tracking-[0.5em] font-bold text-white whitespace-nowrap hidden sm:block">
+        Crafted with Excellence • 2026
       </div>
     </div>
   );
