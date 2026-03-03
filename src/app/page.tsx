@@ -1,39 +1,24 @@
-'use client';
-
 export default function Home() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <h1 className="text-4xl font-bold text-center sm:text-left">
-          ยินดีต้อนรับสู่หน้าเว็บทดสอบ Next.js! 🚀
+    <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+      <div className="relative group">
+        <div className="absolute -inset-1 bg-gradient-to-r from-red-600 to-red-900 rounded-lg blur opacity-25 group-hover:opacity-75 transition duration-1000 group-hover:duration-200"></div>
+        <h1 className="relative text-7xl md:text-9xl font-black text-white tracking-tighter red-glow">
+          ทดสอบ<span className="text-red-600">.</span>
         </h1>
-        
-        <div className="bg-blue-50 dark:bg-blue-900/20 p-6 rounded-lg border border-blue-200 dark:border-blue-800">
-          <p className="text-lg mb-4">
-            หน้านี้คือหน้าเว็บที่สร้างขึ้นเพื่อทดสอบการรันและการเชื่อมต่อโดเมน
-          </p>
-          <ul className="list-disc list-inside space-y-2 text-zinc-600 dark:text-zinc-400">
-            <li>สร้างด้วย Next.js 15+</li>
-            <li>ใช้ Tailwind CSS สำหรับตกแต่ง</li>
-            <li>รองรับ Dark Mode</li>
-          </ul>
-        </div>
-
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <button 
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            onClick={() => alert('สวัสดีครับ! ยินดีที่ได้รู้จัก')}
-          >
-            ลองกดปุ่มนี้ดู
-          </button>
-        </div>
-      </main>
+      </div>
       
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <p className="text-sm text-zinc-500">
-          loverr_ezx
-        </p>
-      </footer>
+      <p className="mt-8 text-zinc-400 max-w-md text-lg font-medium leading-relaxed">
+        ยินดีต้อนรับสู่โปรเจกต์ Next.js รูปแบบใหม่ 
+        <br />
+        <span className="text-red-500 font-bold">Black & Red 3D Edition</span>
+      </p>
+
+      <div className="mt-12 flex gap-4">
+        <div className="w-12 h-12 rounded-full border border-red-900/50 bg-zinc-950 flex items-center justify-center box-red-glow animate-bounce">
+          <div className="w-2 h-2 bg-red-600 rounded-full"></div>
+        </div>
+      </div>
     </div>
   );
 }

@@ -1,26 +1,57 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --background: #0a0a0a;
+  --foreground: #ffffff;
+  --primary-red: #e60000;
+  --dark-red: #8b0000;
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
+  margin: 0;
+  overflow-x: hidden;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* 3D Background Effect */
+.bg-3d-grid {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  background: linear-gradient(to bottom, #000 0%, #0a0a0a 100%);
+  perspective: 500px;
+}
+
+.bg-3d-grid::after {
+  content: "";
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background-image: linear-gradient(var(--primary-red) 1px, transparent 1px),
+    linear-gradient(90deg, var(--primary-red) 1px, transparent 1px);
+  background-size: 50px 50px;
+  transform: rotateX(60deg) translateY(-20%);
+  animation: grid-move 20s linear infinite;
+  opacity: 0.15;
+}
+
+@keyframes grid-move {
+  0% { transform: rotateX(60deg) translateY(0); }
+  100% { transform: rotateX(60deg) translateY(50px); }
+}
+
+/* Glow Effect */
+.red-glow {
+  text-shadow: 0 0 10px var(--primary-red), 0 0 20px var(--primary-red);
+}
+
+.box-red-glow {
+  box-shadow: 0 0 15px rgba(230, 0, 0, 0.4);
 }
