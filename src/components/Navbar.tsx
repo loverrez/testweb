@@ -159,6 +159,18 @@ export default function Navbar({
           </div>
           
           <div className="space-y-1">
+            <div className="mb-2">
+              <Link 
+                href="/account"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-zinc-300 hover:bg-red-900/20 hover:text-red-500 rounded-xl transition-all group"
+              >
+                <div className="p-1.5 bg-zinc-900 rounded-lg group-hover:bg-red-900/30 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-3-3.87"/><path d="M4 21v-2a4 4 0 0 1 3-3.87"/><circle cx="12" cy="7" r="4"/></svg>
+                </div>
+                จัดการผู้ใช้
+              </Link>
+            </div>
             {isAdmin && (
               <div className="mb-2">
                 <Link 
