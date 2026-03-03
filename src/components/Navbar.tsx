@@ -10,6 +10,7 @@ export default function Navbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
+  const avatarRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -33,7 +34,11 @@ export default function Navbar() {
 
     // 3. Close menu when clicking outside
     const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      // Check if click is outside both menu and avatar button
+      if (
+        menuRef.current && !menuRef.current.contains(event.target as Node) &&
+        avatarRef.current && !avatarRef.current.contains(event.target as Node)
+      ) {
         setIsMenuOpen(false);
       }
     };
@@ -52,8 +57,9 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl">
-      <div className="bg-black/60 backdrop-blur-md border border-red-900/50 rounded-2xl px-8 py-4 flex items-center justify-between box-red-glow">
+    <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl flex flex-col items-end gap-3">
+      {/* Main Navbar Frame */}
+      <div className="w-full bg-black/60 backdrop-blur-md border border-red-900/50 rounded-2xl px-8 py-4 flex items-center justify-between box-red-glow">
         <Link href="/" className="text-2xl font-black text-red-600 hover:text-red-500 transition-all hover:scale-105 tracking-tighter">
           NEXT<span className="text-white">WEB</span>
         </Link>
@@ -68,7 +74,6 @@ export default function Navbar() {
 
           {!user ? (
             <div className="flex items-center gap-4">
-              {/* Login Icon Button */}
               <Link 
                 href="/login" 
                 title="เข้าสู่ระบบ"
@@ -77,7 +82,6 @@ export default function Navbar() {
                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" x2="3" y1="12" y2="12"/></svg>
               </Link>
               
-              {/* Register Icon Button */}
               <Link 
                 href="/register" 
                 title="สมัครสมาชิก"
@@ -87,51 +91,62 @@ export default function Navbar() {
               </Link>
             </div>
           ) : (
-            <div className="relative" ref={menuRef}>
-              {/* User Avatar Circle */}
-              <button 
-                onClick={() => setIsMenuOpen(!isMenuOpen)}
-                className="w-10 h-10 rounded-full border-2 border-red-600 overflow-hidden hover:scale-105 transition-all box-red-glow relative group"
-              >
-                <img 
-                  src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} 
-                  alt="Avatar"
-                  className="w-full h-full object-cover bg-zinc-900"
-                />
-                <div className="absolute inset-0 bg-red-600/10 group-hover:bg-transparent transition-colors"></div>
-              </button>
-
-              {/* Dropdown Menu Popup */}
-              {isMenuOpen && (
-                <div className="absolute top-14 right-0 w-56 bg-zinc-950 border border-red-900/50 rounded-2xl p-2 shadow-2xl backdrop-blur-xl animate-in fade-in zoom-in duration-200">
-                  <div className="px-4 py-3 border-b border-zinc-900 mb-2">
-                    <p className="text-xs font-bold text-red-600 uppercase tracking-widest">ยินดีต้อนรับ</p>
-                    <p className="text-sm font-bold text-white truncate">{user.user_metadata?.username || user.email}</p>
-                  </div>
-                  
-                  {isAdmin && (
-                    <Link 
-                      href="/admin"
-                      className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-zinc-300 hover:bg-red-900/20 hover:text-red-500 rounded-xl transition-all group"
-                    >
-                      <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:rotate-12 transition-transform"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 17V7h5a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-5"/><path d="M14 13h1"/></svg>
-                      เข้าสู่หลังบ้าน
-                    </Link>
-                  )}
-
-                  <button 
-                    onClick={handleLogout}
-                    className="flex items-center gap-3 w-full px-4 py-3 text-sm font-medium text-zinc-300 hover:bg-red-900/20 hover:text-red-500 rounded-xl transition-all group"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
-                    ออกจากระบบ
-                  </button>
-                </div>
-              )}
-            </div>
+            <button 
+              ref={avatarRef}
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="w-10 h-10 rounded-full border-2 border-red-600 overflow-hidden hover:scale-105 transition-all box-red-glow relative group"
+            >
+              <img 
+                src={`https://api.dicebear.com/7.x/avataaars/svg?seed=${user.email}`} 
+                alt="Avatar"
+                className="w-full h-full object-cover bg-zinc-900"
+              />
+              <div className="absolute inset-0 bg-red-600/10 group-hover:bg-transparent transition-colors"></div>
+            </button>
           )}
         </div>
       </div>
+
+      {/* Separate User Popup - Aligned to the right side of the Navbar container */}
+      {isMenuOpen && user && (
+        <div 
+          ref={menuRef}
+          className="w-64 bg-zinc-950/90 backdrop-blur-2xl border border-red-900/50 rounded-2xl p-2 shadow-[0_20px_50px_rgba(0,0,0,0.5)] box-red-glow animate-in slide-in-from-top-2 fade-in duration-300"
+        >
+          <div className="px-4 py-3 border-b border-zinc-900 mb-2">
+            <p className="text-[10px] font-black text-red-600 uppercase tracking-[0.2em]">User Profile</p>
+            <p className="text-sm font-black text-white truncate mt-1">
+              {user.user_metadata?.username || user.email.split('@')[0]}
+            </p>
+            <p className="text-[10px] text-zinc-500 truncate">{user.email}</p>
+          </div>
+          
+          <div className="space-y-1">
+            {isAdmin && (
+              <Link 
+                href="/admin"
+                onClick={() => setIsMenuOpen(false)}
+                className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-zinc-300 hover:bg-red-900/20 hover:text-red-500 rounded-xl transition-all group"
+              >
+                <div className="p-1.5 bg-zinc-900 rounded-lg group-hover:bg-red-900/30 transition-colors">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><rect width="18" height="18" x="3" y="3" rx="2"/><path d="M9 17V7h5a2 2 0 0 1 2 2v2a2 2 0 0 1-2 2h-5"/><path d="M14 13h1"/></svg>
+                </div>
+                เข้าสู่หลังบ้าน
+              </Link>
+            )}
+
+            <button 
+              onClick={handleLogout}
+              className="flex items-center gap-3 w-full px-4 py-3 text-sm font-bold text-zinc-300 hover:bg-red-900/20 hover:text-red-500 rounded-xl transition-all group text-left"
+            >
+              <div className="p-1.5 bg-zinc-900 rounded-lg group-hover:bg-red-900/30 transition-colors text-zinc-500 group-hover:text-red-500">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+              </div>
+              ออกจากระบบ
+            </button>
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
