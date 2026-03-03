@@ -20,22 +20,25 @@ export default function LoginPage() {
     try {
       let email = identifier;
 
-      // If identifier is not an email format, try to find email from username
-      if (!identifier.includes('@')) {
-        const { data: userData, error: userError } = await supabase
-          .from('profiles') // Assuming you have a profiles table that links username to id
-          // Note: If you don't have a profiles table, you'd need to fetch from auth.users (requires admin)
-          // For simplicity, we'll try to sign in directly if it's an email, 
-          // but for username, we usually need a lookup table.
-          .select('id')
+      // Special handling for Admin (admin/admin)
+      if (identifier === 'admin' && password === 'admin') {
+        // We will try to sign in with a fixed admin email if it exists
+        // or redirect to a mock state if you just want to test.
+        // For a real system, we'll use 'admin@admin.com' as the internal email for the 'admin' username.
+        email = 'admin@admin.com'; 
+      } else if (!identifier.includes('@')) {
+        // Standard username lookup
+        const { data: profile, error: profileError } = await supabase
+          .from('profiles')
+          .select('email')
           .eq('username', identifier)
           .single();
         
-        // Supabase Auth requires email for signInWithPassword.
-        // A common pattern is to use a lookup or just accept email for now.
-        // Let's assume for this test we'll try to find the email if possible.
-        // Since we don't have a lookup table yet, we'll suggest using email or
-        // we can implement a basic lookup if you create the table.
+        if (profileError || !profile) {
+          throw new Error('ไม่พบชื่อผู้ใช้นี้ในระบบ กรุณาตรวจสอบอีกครั้งหรือใช้อีเมลในการเข้าสู่ระบบ');
+        }
+        
+        email = profile.email;
       }
 
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -50,7 +53,11 @@ export default function LoginPage() {
         router.push('/');
       }, 1500);
     } catch (error: any) {
-      setMessage('เกิดข้อผิดพลาด: ' + error.message);
+      let errorMsg = error.message;
+      if (errorMsg === 'Invalid login credentials') {
+        errorMsg = 'ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง';
+      }
+      setMessage('เกิดข้อผิดพลาด: ' + errorMsg);
     } finally {
       setLoading(false);
     }
@@ -75,7 +82,7 @@ export default function LoginPage() {
             <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">ชื่อผู้ใช้ หรือ อีเมล</label>
             <input 
               type="text" 
-              placeholder="Username or Email"
+              placeholder="admin / Username / Email"
               required
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}

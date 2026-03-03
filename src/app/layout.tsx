@@ -1,7 +1,8 @@
-import type { Metadata } from "next";
+import type { Metadata, ResolvingMetadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import { supabase } from "@/lib/supabase";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -13,10 +14,29 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
-export const metadata: Metadata = {
-  title: "NextWeb - Black & Red Edition",
-  description: "Modern web with Next.js",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // Fetch site settings from Supabase
+  const { data } = await supabase
+    .from('site_settings')
+    .select('*')
+    .single();
+
+  return {
+    title: data?.site_name || "NextWeb - Black & Red Edition",
+    description: data?.site_description || "Modern web with Next.js",
+    openGraph: {
+      title: data?.site_name || "NextWeb",
+      description: data?.site_description || "Modern web with Next.js",
+      images: data?.site_logo ? [data.site_logo] : [],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: data?.site_name || "NextWeb",
+      description: data?.site_description || "Modern web with Next.js",
+      images: data?.site_logo ? [data.site_logo] : [],
+    },
+  };
+}
 
 export default function RootLayout({
   children,
