@@ -6,33 +6,23 @@ export default async function LandingPage() {
     .select('*')
     .single();
 
-  const siteName = data?.site_name || "NEXTWEB";
+  const siteName = data?.site_name || "DEITY HUB";
   const siteLogo = data?.site_logo;
-  const siteDescription = data?.site_description || "เว็บไซต์สมัยใหม่ที่มาพร้อมด้วยเทคโนโลยีล่าสุด พร้อมสร้างประสบการณ์ที่ยอดเยี่ยมให้กับผู้ใช้งาน";
+  const siteDescription = data?.site_description || "ค่ายสคริปต์ Roblox ที่มีฟังก์ชั่นโปรหลากหลายที่ตอบโจทย์ กับร้านรับฟาร์มต่างๆ มากมายมีครบหมด จบในที่เดียว อัพเดทโปรฟรีไม่ต้องซื้อใหม่เพิ่ม ซัพพอร์ตลูกค้าทุกวัน และรองรับ โปรแกรมรันฟรี";
 
   return (
-    <div className="min-h-[90vh] flex items-start justify-center px-2 pt-6">
-      <div className="relative w-full h-[85vh] max-w-[98vw]">
-        {/* Empty Frame - Transparent background, can see through to website background */}
-        <div className="relative w-full h-full bg-transparent border border-white/20 rounded-3xl p-8">
-          {/* Site Name and Description */}
-          <div className="flex flex-col items-start pl-4">
-            <div className="flex items-center gap-3 mb-4">
-              {siteLogo ? (
-                <img 
-                  src={siteLogo} 
-                  alt="Logo" 
-                  className="w-12 h-12 object-cover rounded-full border border-white/20" 
-                />
-              ) : null}
-              <h1 className="text-4xl md:text-6xl font-black text-white tracking-tighter">
-                {siteName}
-              </h1>
-            </div>
-            <p className="text-lg md:text-xl text-zinc-300 max-w-3xl leading-relaxed">
-              {siteDescription}
-            </p>
-          </div>
+    <div className="min-h-[90vh] flex items-start justify-start px-4 md:px-8 lg:px-16 pt-24">
+      <div className="relative w-full max-w-4xl">
+        <div className="flex flex-col items-start text-left">
+          <h1 className="text-6xl md:text-8xl font-black text-white tracking-tighter mb-2">
+            {siteName}
+          </h1>
+          <h2 className="text-xl md:text-2xl font-bold text-red-500 mb-4">
+            PREMIUM SCRIPT SUPPORT 24/7
+          </h2>
+          <p className="text-base md:text-lg text-zinc-300 max-w-2xl leading-relaxed">
+            {siteDescription}
+          </p>
         </div>
       </div>
     </div>
