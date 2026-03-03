@@ -12,6 +12,7 @@ body {
   color: var(--foreground);
   margin: 0;
   overflow-x: hidden;
+  letter-spacing: -0.02em;
 }
 
 /* 3D Background Effect */

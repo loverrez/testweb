@@ -97,7 +97,7 @@ export default function AdminLayout({
                 onClick={() => setOpenCategory(openCategory === category.name ? null : category.name)}
                 className="w-full flex items-center justify-between px-4 py-3 rounded-2xl font-black text-zinc-500 hover:text-white hover:bg-white/5 transition-all"
               >
-                <span className="text-[10px] uppercase tracking-[0.2em]">{category.name}</span>
+                <span className="text-[10px] uppercase">{category.name}</span>
                 <svg className={`w-4 h-4 transition-transform duration-300 ${openCategory === category.name ? 'rotate-180 text-red-500' : ''}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M6 9l6 6 6-6" />
                 </svg>

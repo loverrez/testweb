@@ -105,7 +105,7 @@ export default function RegisterPage() {
         </div>
 
         {message && (
-          <div className={`mb-10 p-5 rounded-2xl text-xs font-black uppercase tracking-widest text-center border ${message.includes('สำเร็จ') ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
+          <div className={`mb-10 p-5 rounded-2xl text-xs font-black uppercase text-center border ${message.includes('สำเร็จ') ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
             {message}
           </div>
         )}

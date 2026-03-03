@@ -209,7 +209,7 @@ export default function Navbar({
             <Link 
               href="/home" 
               onClick={() => setIsMobileMenuOpen(false)}
-              className="block text-lg font-black text-white uppercase tracking-widest"
+              className="block text-lg font-black text-white uppercase"
             >
               หน้าหลัก
             </Link>
@@ -222,14 +222,14 @@ export default function Navbar({
               <Link 
                 href="/login" 
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-center py-4 text-zinc-400 font-bold uppercase tracking-widest"
+                className="text-center py-4 text-zinc-400 font-bold uppercase"
               >
                 เข้าสู่ระบบ
               </Link>
               <Link 
                 href="/register" 
                 onClick={() => setIsMobileMenuOpen(false)}
-                className="text-center py-4 bg-red-700 text-white font-black rounded-2xl uppercase tracking-widest"
+                className="text-center py-4 bg-red-700 text-white font-black rounded-2xl uppercase"
               >
                 สมัครสมาชิก
               </Link>

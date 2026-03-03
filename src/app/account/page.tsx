@@ -131,7 +131,7 @@ export default function AccountPage() {
             </div>
 
             {profileMessage && (
-              <div className={`mb-8 p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center border ${profileMessage.includes('สำเร็จ') ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
+              <div className={`mb-8 p-4 rounded-2xl text-[10px] font-black uppercase text-center border ${profileMessage.includes('สำเร็จ') ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
                 {profileMessage}
               </div>
             )}
@@ -184,7 +184,7 @@ export default function AccountPage() {
             </div>
 
             {passwordMessage && (
-              <div className={`mb-8 p-4 rounded-2xl text-[10px] font-black uppercase tracking-widest text-center border ${passwordMessage.includes('สำเร็จ') ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
+              <div className={`mb-8 p-4 rounded-2xl text-[10px] font-black uppercase text-center border ${passwordMessage.includes('สำเร็จ') ? 'bg-green-500/10 text-green-500 border-green-500/20' : 'bg-red-500/10 text-red-500 border-red-500/20'}`}>
                 {passwordMessage}
               </div>
             )}

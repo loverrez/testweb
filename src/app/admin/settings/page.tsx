@@ -64,7 +64,7 @@ export default function AdminSettings() {
   return (
     <div className="space-y-10 animate-in fade-in duration-500">
       <div className="mb-8">
-        <h2 className="text-zinc-500 text-sm font-black uppercase tracking-[0.2em] mb-2">หมวดหมู่: จัดการเว็บไซต์</h2>
+        <h2 className="text-zinc-500 text-sm font-black uppercase mb-2">หมวดหมู่: จัดการเว็บไซต์</h2>
         <h1 className="text-3xl font-black text-white">หัวข้อ: <span className="text-red-600">ตั้งค่าเว็บไซต์</span></h1>
       </div>
 
@@ -76,7 +76,7 @@ export default function AdminSettings() {
 
       <form onSubmit={handleSave} className="space-y-6 max-w-2xl bg-zinc-950 border border-zinc-900 p-10 rounded-3xl box-red-glow">
         <div className="space-y-2">
-          <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">ชื่อเว็บไซต์ (Site Name)</label>
+          <label className="text-xs font-bold text-zinc-400 uppercase ml-1">ชื่อเว็บไซต์ (Site Name)</label>
           <input 
             type="text" 
             value={siteName}
@@ -87,7 +87,7 @@ export default function AdminSettings() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">โลโก้เว็บไซต์ (URL รูปภาพ)</label>
+          <label className="text-xs font-bold text-zinc-400 uppercase ml-1">โลโก้เว็บไซต์ (URL รูปภาพ)</label>
           <input 
             type="text" 
             value={siteLogo}
@@ -98,7 +98,7 @@ export default function AdminSettings() {
         </div>
 
         <div className="space-y-2">
-          <label className="text-xs font-bold text-zinc-400 uppercase tracking-widest ml-1">รายละเอียดเว็บไซต์ (Description / SEO)</label>
+          <label className="text-xs font-bold text-zinc-400 uppercase ml-1">รายละเอียดเว็บไซต์ (Description / SEO)</label>
           <textarea 
             value={siteDescription}
             onChange={(e) => setSiteDescription(e.target.value)}

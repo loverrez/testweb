@@ -56,7 +56,7 @@ export default function LandingPage() {
             href="/home" 
             className="group relative inline-flex items-center justify-center px-8 py-4 md:px-14 md:py-6 font-black text-white transition-all duration-300 bg-red-700 rounded-full sm:w-auto hover:bg-red-600 hover:shadow-[0_0_60px_rgba(230,0,0,0.4)] active:scale-[0.98] overflow-hidden"
           >
-            <span className="relative z-10 flex items-center gap-3 uppercase tracking-[0.2em] text-sm md:text-lg">
+            <span className="relative z-10 flex items-center gap-3 uppercase text-sm md:text-lg">
               เริ่มต้นใช้งานเลย!
               <svg className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="3" d="M13 7l5 5m0 0l-5 5m5-5H6" />
