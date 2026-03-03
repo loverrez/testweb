@@ -17,5 +17,10 @@ export default function ConditionalNavbar({
     return null;
   }
 
+  // On landing page, show navbar without site name and logo
+  if (pathname === '/') {
+    return <Navbar />;
+  }
+
   return <Navbar siteName={siteName} siteLogo={siteLogo} />;
 }
