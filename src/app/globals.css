@@ -34,12 +34,12 @@ body {
   left: -50%;
   width: 200%;
   height: 200%;
-  background-image: linear-gradient(var(--primary-red) 1px, transparent 1px),
-    linear-gradient(90deg, var(--primary-red) 1px, transparent 1px);
+  background-image: linear-gradient(rgba(255, 255, 255, 0.2) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.2) 1px, transparent 1px);
   background-size: 50px 50px;
   transform: rotateX(60deg) translateY(-20%);
   animation: grid-move 20s linear infinite;
-  opacity: 0.15;
+  opacity: 0.3;
 }
 
 @keyframes grid-move {
