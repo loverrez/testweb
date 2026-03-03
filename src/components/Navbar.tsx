@@ -15,33 +15,26 @@ export default function Navbar({
   const [user, setUser] = useState<any>(null);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
-  const [siteName, setSiteName] = useState(initialSiteName);
-  const [siteLogo, setSiteLogo] = useState(initialSiteLogo);
+  const [siteSettings, setSiteSettings] = useState<{ siteName?: string; siteLogo?: string } | null>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const avatarRef = useRef<HTMLButtonElement>(null);
   const router = useRouter();
 
   useEffect(() => {
-    if (initialSiteName) setSiteName(initialSiteName);
-  }, [initialSiteName]);
-
-  useEffect(() => {
-    if (initialSiteLogo) setSiteLogo(initialSiteLogo);
-  }, [initialSiteLogo]);
-
-  useEffect(() => {
-    // 0. Fetch site settings if missing
     const fetchSettings = async () => {
-      if (!initialSiteLogo) {
-        const { data } = await supabase
-          .from('site_settings')
-          .select('site_name, site_logo')
-          .single();
-        
-        if (data) {
-          if (data.site_name) setSiteName(data.site_name);
-          if (data.site_logo) setSiteLogo(data.site_logo);
-        }
+      if (initialSiteLogo && initialSiteName) {
+        return;
+      }
+      const { data } = await supabase
+        .from('site_settings')
+        .select('site_name, site_logo')
+        .single();
+      
+      if (data) {
+        setSiteSettings({
+          siteName: data.site_name || initialSiteName,
+          siteLogo: data.site_logo || initialSiteLogo,
+        });
       }
     };
     fetchSettings();
@@ -79,13 +72,16 @@ export default function Navbar({
       subscription.unsubscribe();
       document.removeEventListener('mousedown', handleClickOutside);
     };
-  }, []); // Empty dependency array for mount only (and initialSiteLogo check is inside)
+  }, [initialSiteLogo, initialSiteName]);
 
   const handleLogout = async () => {
     await supabase.auth.signOut();
     setIsMenuOpen(false);
     router.push('/');
   };
+
+  const siteName = siteSettings?.siteName || initialSiteName;
+  const siteLogo = siteSettings?.siteLogo || initialSiteLogo;
 
   return (
     <nav className="fixed top-6 left-1/2 -translate-x-1/2 z-50 w-[90%] max-w-4xl flex flex-col items-end gap-3">
@@ -98,7 +94,6 @@ export default function Navbar({
               alt="Logo" 
               className="w-10 h-10 object-cover rounded-full border-2 border-red-900/50" 
               onError={(e) => {
-                // Fallback if image fails to load
                 e.currentTarget.style.display = 'none';
               }}
             />
