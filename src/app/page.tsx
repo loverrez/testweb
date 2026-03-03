@@ -50,11 +50,6 @@ export default function LandingPage() {
           <div className="h-1.5 w-24 md:w-40 bg-gradient-to-r from-transparent via-red-600 to-transparent mx-auto rounded-full"></div>
         </div>
 
-        {/* Subtitle / Slogan */}
-        <p className="text-zinc-400 text-sm sm:text-lg md:text-xl font-medium tracking-[0.3em] uppercase opacity-70 max-w-2xl px-4">
-          The Future of Web Innovation & Design
-        </p>
-
         {/* Action Button - Responsive & Premium */}
         <div className="mt-8 md:mt-14 w-full sm:w-auto">
           <Link 

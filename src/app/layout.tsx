@@ -1,5 +1,5 @@
 import type { Metadata, ResolvingMetadata } from "next";
-import { Inter, Kanit } from "next/font/google";
+import { Inter, Anuphan } from "next/font/google";
 import "./globals.css";
 import ConditionalNavbar from "@/components/ConditionalNavbar";
 import MainContentWrapper from "@/components/MainContentWrapper";
@@ -10,10 +10,10 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
-const kanit = Kanit({
-  variable: "--font-kanit",
+const anuphan = Anuphan({
+  variable: "--font-anuphan",
   subsets: ["thai", "latin"],
-  weight: ["100", "200", "300", "400", "500", "600", "700", "800", "900"],
+  weight: ["100", "200", "300", "400", "500", "600", "700"],
 });
 
 export const dynamic = 'force-dynamic';
@@ -78,7 +78,7 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" href={logoHref} />
       </head>
       <body
-        className={`${inter.variable} ${kanit.variable} font-kanit antialiased bg-black text-white`}
+        className={`${inter.variable} ${anuphan.variable} font-anuphan antialiased bg-black text-white`}
       >
         <div className="bg-3d-grid" />
         <ConditionalNavbar 

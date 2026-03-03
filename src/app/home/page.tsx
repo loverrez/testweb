@@ -7,9 +7,6 @@ export default function HomePage() {
         <h2 className="text-4xl md:text-6xl font-black text-white mb-6 uppercase tracking-tighter">
           ยินดีต้อนรับสู่ <span className="text-red-600">หน้าหลัก</span>
         </h2>
-        <p className="text-zinc-500 max-w-lg mx-auto font-medium text-lg leading-relaxed">
-          เลือกใช้งานฟีเจอร์ต่างๆ ของเราได้จากเมนูด้านบน หรือจัดการโปรไฟล์ของคุณเพื่อเริ่มต้นใช้งานอย่างเต็มรูปแบบ
-        </p>
       </div>
     </div>
   );
