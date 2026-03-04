@@ -90,7 +90,7 @@ export default function Navbar({
   const siteLogo = siteSettings?.siteLogo || initialSiteLogo;
 
   return (
-    <nav className="fixed top-0 sm:top-6 left-0 sm:left-1/2 sm:-translate-x-1/2 z-50 w-full sm:w-[98%] lg:w-[95%] max-w-7xl flex flex-col items-end gap-3 px-4 sm:px-0">
+    <nav className="fixed top-0 sm:top-6 left-0 sm:left-1/2 sm:-translate-x-1/2 z-50 w-full sm:w-[95%] lg:w-[90%] max-w-5xl flex flex-col items-end gap-3 px-4 sm:px-0">
       {/* Main Navbar Frame */}
       <div className="w-full bg-black/60 backdrop-blur-xl border-b sm:border border-white/10 sm:rounded-3xl px-6 py-4 flex items-center justify-between shadow-2xl">
         <Link href="/" className="flex items-center gap-3 text-xl md:text-2xl font-black text-white hover:text-red-500 transition-all hover:scale-105 tracking-tighter group">
