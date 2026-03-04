@@ -14,11 +14,11 @@ export default async function LandingPage() {
       <div className="relative w-full h-[85vh] max-w-[98vw]">
         {/* Empty Frame - Transparent background, can see through to website background */}
         <div className="relative w-full h-full bg-transparent border border-white/20 rounded-3xl">
-          <div className="absolute top-1/2 -translate-y-1/2 right-[35%] max-w-[60ch]">
-            <h1 className="text-4xl md:text-5xl font-black text-red-600 tracking-tight">
+          <div className="absolute top-1/2 -translate-y-1/2 right-[25%] max-w-[60ch]">
+            <h1 className="text-5xl md:text-6xl font-black text-red-600 tracking-tight leading-tight">
               {siteName}
             </h1>
-            <p className="mt-4 text-lg md:text-xl font-medium text-white">
+            <p className="mt-2 text-xl md:text-2xl font-semibold text-white leading-snug">
               {siteDesc}
             </p>
           </div>
